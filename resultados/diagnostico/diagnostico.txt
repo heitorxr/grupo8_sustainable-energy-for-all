@@ -1,0 +1,29 @@
+DIAGNÓSTICO INICIAL — SEM TRATAMENTO
+Base: 5271 linhas, 52 variáveis, 251 pares código/nome, anos 1990 a 2010.
+Duplicatas em todas as colunas lidas: 0. Chaves código/ano repetidas: 0.
+Campos numéricos com falha de conversão: 0. Células inválidas: 0.
+Ausência nos indicadores (sem identificadores e ano): 38.18%.
+Colunas totalmente ausentes: 0. Linhas sem nenhum indicador: 522.
+Células percentuais fora de [0,100]: 20. Células numéricas negativas: 1615.
+Espaços nas pontas: 0. Identificadores/ano ausentes: 0.
+
+Variáveis com maior ausência:
+- access_non_solid_fuel_rural_pop_pct: 96.26%
+- access_non_solid_fuel_urban_pop_pct: 96.26%
+- access_non_solid_fuel_total_pop_pct: 88.05%
+- access_electricity_urban_pop_pct: 86.87%
+- access_electricity_rural_pop_pct: 86.80%
+- access_electricity_total_pop_pct: 86.80%
+
+DECISÕES NECESSÁRIAS (NÃO EXECUTADAS):
+- Escolher indicadores e recorte temporal conforme cobertura; não remover toda linha com qualquer NA.
+- Conferir códigos e nomes antes de definir quais localidades comparar.
+- Definir tipos numéricos e fatores na futura etapa de preparação.
+- Investigar percentuais fora da faixa e negativos por indicador; sinalizar não significa corrigir ou excluir.
+- Distinguir zero observado de ausência e preservar unidades diferentes.
+- Avaliar variáveis sem informação ou constantes antes de usá-las nas análises.
+
+O arquivo já se chama energy_cleaned.csv na fonte TidyTuesday; é bruto para este projeto, não a origem SE4ALL anterior à curadoria.
+A classificação de ausências e as conversões numéricas são apenas diagnósticas, em memória.
+Nenhuma imputação, deduplicação, interpolação, exclusão ou transformação foi aplicada.
+Uso de IA: apoio à programação e à leitura do diagnóstico; contagens produzidas pelo código R.
