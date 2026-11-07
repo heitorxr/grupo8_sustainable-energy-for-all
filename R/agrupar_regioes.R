@@ -1,15 +1,15 @@
 library(tidyverse)
 
 agrupar_regioes <- function(dados) {
-  # Antes de agrupar, conferimos se a tabela possui os identificadores necessários.
+  # Recebe a base bruta já importada, ainda sem a coluna regiao.
   ids <- c("country_name", "country_code", "yr")
   if (!is.data.frame(dados) || !all(ids %in% names(dados))) {
     stop("Forneca uma tabela com country_name, country_code e yr.")
   }
 
-  # Cada lista reúne os códigos originais de uma região, sem renomear os países.
-
-  # ANT, CHI, KSV e TWN têm correspondências geográficas complementares explícitas.
+  # Códigos dos países e territórios em cada região.
+  # Inclui as correspondências específicas de ANT, CHI, KSV e TWN.
+  # Antes de somar, conferir territórios históricos e seus sucessores.
   codigos <- list(
     "África" = c(
       "AGO", "BDI", "BEN", "BFA", "BWA", "CAF", "CIV", "CMR", "COG", "COM",
@@ -48,8 +48,7 @@ agrupar_regioes <- function(dados) {
     )
   )
 
-  # Estes códigos já representam grupos, não países individuais.
-  # Eles precisam ficar separados para não serem contados novamente.
+  # Estes agregados já representam grupos e não entram novamente como países.
   renda <- c("HIC", "LIC", "LMC", "LMY", "MIC", "NOC", "OEC", "UMC")
   geograficos <- c(
     "GCA", "GCN", "GEA", "GEE", "GEJ", "GEU", "GLC", "GNA",
@@ -57,24 +56,20 @@ agrupar_regioes <- function(dados) {
   )
   codigos_agregados <- c(renda, geograficos)
 
-  # enframe transforma a lista numa tabela; unnest_longer cria uma linha por código.
+  # Uma linha por código, com a região correspondente.
   mapa <- enframe(codigos, name = "regiao", value = "country_code") %>%
     unnest_longer(country_code)
 
-  # Um mesmo código não pode pertencer a duas regiões.
-  duplicados <- mapa %>%
-    count(country_code) %>%
-    filter(n > 1)
-
-  if (nrow(duplicados) > 0) {
+  # Cada código deve ter uma única região.
+  if (anyDuplicated(mapa$country_code) > 0) {
     stop("Há códigos atribuídos a mais de uma região.")
   }
 
-  # filter mantém os países e territórios; os valores dos indicadores ficam iguais.
+  # Mantém apenas países e territórios.
   paises <- dados %>%
     filter(!country_code %in% codigos_agregados)
 
-  # anti_join encontra códigos da base que ainda não aparecem no mapa de regiões.
+  # Procura códigos sem região definida.
   faltantes <- paises %>%
     distinct(country_code) %>%
     anti_join(mapa, by = "country_code")
@@ -83,23 +78,20 @@ agrupar_regioes <- function(dados) {
     stop("Códigos ainda sem classificação: ", paste(faltantes$country_code, collapse = ", "))
   }
 
-  # left_join acrescenta a região usando o código como chave, sem resumir os dados.
+  # Adiciona a região pelo código da localidade.
   paises <- paises %>%
     left_join(mapa, by = "country_code")
 
-  # Preservamos também os grupos de renda e as regiões que já vieram na fonte.
+  # Guarda os agregados originais em outra tabela.
   agregados_originais <- dados %>%
     filter(country_code %in% codigos_agregados)
 
-  # distinct evita contar cada localidade novamente em cada ano da série.
-  # count informa quantas localidades foram atribuídas a cada uma das cinco regiões.
+  # Conta cada localidade uma vez, independentemente do ano.
   resumo <- paises %>%
     distinct(country_code, regiao) %>%
     count(regiao, name = "localidades") %>%
     arrange(factor(regiao, levels = names(codigos)))
 
-  # Devolvemos as três tabelas em memória, sem salvar CSVs ou calcular médias regionais.
-  # Territórios históricos ainda precisam de conferência antes de qualquer soma.
   list(
     paises = paises,
     agregados_originais = agregados_originais,
