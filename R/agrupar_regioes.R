@@ -1,6 +1,6 @@
 library(tidyverse)
 
-agrupar_regioes <- function(dados) {
+agrupar_regioes <- function(dados, pasta_saida = NULL) {
   # Recebe a base bruta já importada, ainda sem a coluna regiao.
   ids <- c("country_name", "country_code", "yr")
   if (!is.data.frame(dados) || !all(ids %in% names(dados))) {
@@ -92,9 +92,20 @@ agrupar_regioes <- function(dados) {
     count(regiao, name = "localidades") %>%
     arrange(factor(regiao, levels = names(codigos)))
 
-  list(
+  resultado <- list(
     paises = paises,
     agregados_originais = agregados_originais,
     resumo = resumo
   )
+
+  # Salva os países e territórios classificados na pasta informada.
+  if (!is.null(pasta_saida)) {
+    dir.create(pasta_saida, recursive = TRUE, showWarnings = FALSE)
+    write_excel_csv2(
+      paises, file.path(pasta_saida, "paises_por_regiao.csv"),
+      na = "NA", append = FALSE
+    )
+  }
+
+  resultado
 }
