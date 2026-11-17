@@ -8,6 +8,6 @@ Dados: TidyTuesday 2026, semana 21 — 26/05/2026.
 
 - Heitor Cardoso Fernandes (@heitorxr)
 - Rafael Gonçalves Gaspar (@rgoncalvesgaspar)
-- [Nome do integrante 3]
+- Julio César Souza Freitas (@juliofrs)
 - [Nome do integrante 4]
 - [Nome do integrante 5]
