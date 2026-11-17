@@ -10,3 +10,4 @@ Dados: TidyTuesday 2026, semana 21 — 26/05/2026.
 - Rafael Gonçalves Gaspar (@rgoncalvesgaspar)
 - [Nome do integrante 3]
 - [Nome do integrante 4]
+- [Nome do integrante 5]
